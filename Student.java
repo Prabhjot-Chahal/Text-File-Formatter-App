@@ -5,36 +5,12 @@ class Student implements Comparable<Student>
 
     private String name;
     private long id;
-    private HashMap<String, Float> courses = new HashMap<String, Float>();
+    private HashMap<String, Float[]> courses = new HashMap<String, Float[]>();
 
-    public Student(String name, long id) throws Exception
+    public Student(String name, long id)
     {
         this.setName(name);
         this.setId(id);
-    }
-
-    public Student(String name) throws Exception
-    {
-        this.setName(name);
-    }
-
-    public Student(long id) throws Exception
-    {
-        this.setId(id);
-    }
-
-    public Student(Student original)
-    {
-        this.name = new String(original.name);
-        this.id = original.id;
-        original.courses.forEach((String key, Float value) -> {
-            this.courses.put(new String(key), value.floatValue());
-        });
-    }
-    
-    public Student()
-    {
-        return;
     }
 
     public String getName()
@@ -42,12 +18,8 @@ class Student implements Comparable<Student>
         return this.name;
     }
 
-    public void setName(String name) throws Exception
+    public void setName(String name)
     {
-        if (name.length() > 20)
-        {
-            throw new Exception("Name length exceeds 20 chars");
-        }
         this.name = name;
     }
 
@@ -56,12 +28,8 @@ class Student implements Comparable<Student>
         return this.id;
     }
 
-    public void setId(long id) throws Exception
+    public void setId(long id)
     {
-        if (id >= 1000000000)
-        {
-            throw new Exception("Id length exceeds 9 digtis");
-        }
         this.id = id;
     }
 
@@ -70,76 +38,54 @@ class Student implements Comparable<Student>
         return this.courses.containsKey(courseCode);
     }
 
-    public void addCourse(String courseCode, float[] marks) throws Exception
+    public Float[] getGrades(String courseCode) throws Exception
     {
-        if (!courseCode.matches("^[A-Za-z]{2}[0-9]{3}$"))
+        if (!this.courses.containsKey(courseCode))
         {
-            throw new Exception("Invalid course code");
+            throw new Exception("Course Code doesn't exist!");
         }
 
-        if (this.courses.containsKey(courseCode))
+        return this.courses.get(courseCode);
+    }
+
+    public void addCourse(String courseCode, Float[] grades) throws Exception
+    {
+        Float[] gradesToAdd = new Float[5];
+
+        if (grades.length != 4)
         {
-            throw new Exception("Course already exists");
+            String errorMessage = "Course should have exactly 4 grades, ";
+            errorMessage += String.format("recieved %d grades", grades.length);
+            throw new Exception(errorMessage);
         }
 
+        int i = 0;
         float total = 0;
-
-        if (marks.length != 4)
+        for (float grade : grades)
         {
-            throw new Exception(
-                String.format(
-                    "Expected 4 marks received %d", 
-                    marks.length
-            ));
-        }
-
-        for (int i = 0; i < marks.length; i++)
-        {
-            float mark = marks[i];
-
-            if (0 <= mark && mark < 100)
+            if (grade < 0 || grade > 100)
             {
-                if (i < 3)
-                {
-                    total += mark * 0.2;
-                }
-                else
-                {
-                    total += mark * 0.4;
-                }
+                String errorMessage = "Grade should be between 0 and 100 (inclusive), ";
+                errorMessage += String.format("recieved %f as grade", grade);
+                throw new Exception(errorMessage);
+            }
+
+            if (i == 3)
+            {
+                total += (grade * 0.4);
             }
             else
             {
-                throw new Exception("Marks should be between 0 and 100");
+                total += (grade * 0.2);
             }
+
+            gradesToAdd[i] = grade;
+
+            i++;
         }
 
-        courses.put(courseCode, total);
-    }
-
-    public String[] formattedCourses()
-    {
-        String[] results = new String[courses.size()];
-
-        courses.forEach((String courseCode, Float marks) -> {
-            String temp = "";
-            temp += Long.toString(this.id) + ", ";
-            temp += this.name + ", ";
-            temp += courseCode + ", ";
-            temp += String.format("%.1f", marks);
-            int index = 0;
-            for (int i = 0; i < results.length; i++)
-            {
-                if (results[i] == null)
-                {
-                    index = i;
-                    break;
-                }
-            }
-            results[index] = temp;
-        });
-
-        return results;
+        gradesToAdd[i] = total;
+        courses.put(courseCode, gradesToAdd);
     }
 
     public int compareTo(Student other)
