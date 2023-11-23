@@ -38,9 +38,9 @@ class Student implements Comparable<Student>
         return this.courses.containsKey(courseCode);
     }
 
-    public String[] getCourses()
+    public Object[] getCourses()
     {
-        String[] courseCodes = (String[]) this.courses.keySet().toArray();
+        Object[] courseCodes = this.courses.keySet().toArray();
         return courseCodes;
     }
 
@@ -94,6 +94,7 @@ class Student implements Comparable<Student>
         courses.put(courseCode, gradesToAdd);
     }
 
+    @Override
     public int compareTo(Student other)
     {
         return Long.compare(this.id, other.id);

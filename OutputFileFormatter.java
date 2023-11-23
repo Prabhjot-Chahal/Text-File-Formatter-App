@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintStream;
 
 class OutputFileFormatter
@@ -10,19 +11,18 @@ class OutputFileFormatter
     {
         File checkFile = new File(filename);
 
-        if (!checkFile.isFile())
-        {
-            throw new FileNotFoundException(filename + " doesn't exist");
+        try {
+            checkFile.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         file = new PrintStream(checkFile);
-
-        printOutputFile(file);
     }
 
     private String formatStudent(Student student)
     {
-        String[] courses = student.getCourses();
+        Object[] courses = student.getCourses();
 
         String idString = Long.toString(student.getId()) + ", ";
 
@@ -30,8 +30,10 @@ class OutputFileFormatter
 
         String outputString = "";
 
-        for (String course : courses)
+        for (Object c : courses)
         {
+            String course = c.toString();
+
             float totalGrade = 0;
             try
             {
@@ -51,10 +53,10 @@ class OutputFileFormatter
         return outputString;
     }
 
-    private void printOutputFile(PrintStream output) 
+    public void printOutputFile() 
     {
         App.students.forEach((Long id, Student student) -> {
-            output.format(formatStudent(student));
+            file.format(formatStudent(student));
         });
     }
 }
