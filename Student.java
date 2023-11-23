@@ -38,6 +38,12 @@ class Student implements Comparable<Student>
         return this.courses.containsKey(courseCode);
     }
 
+    public String[] getCourses()
+    {
+        String[] courseCodes = (String[]) this.courses.keySet().toArray();
+        return courseCodes;
+    }
+
     public Float[] getGrades(String courseCode) throws Exception
     {
         if (!this.courses.containsKey(courseCode))
