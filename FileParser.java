@@ -112,6 +112,12 @@ class FileParser
 
             student = App.students.get(id);
 
+            if (student.courseExists(splitLine[1]))
+            {
+                errorMessage = "Duplicate Course";
+                throw new Exception(errorMessage);
+            }
+
             student.addCourse(splitLine[1], grades);
         }
     }

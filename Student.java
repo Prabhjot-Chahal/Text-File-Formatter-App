@@ -38,9 +38,10 @@ class Student implements Comparable<Student>
         return this.courses.containsKey(courseCode);
     }
 
-    public Object[] getCourses()
+    public String[] getCourses()
     {
-        Object[] courseCodes = this.courses.keySet().toArray();
+        String[] courseCodes = new String[courses.size()];
+        this.courses.keySet().toArray(courseCodes);
         return courseCodes;
     }
 

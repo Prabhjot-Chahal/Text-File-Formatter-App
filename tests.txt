@@ -1,0 +1,7 @@
+Test For:
+    1. Missing File
+    2. Not Enough or too many Fields in any row in any file
+    3. Field Type invalid in any row in any file
+    5. Missing id in Name file
+    4. Duplicate id in Name File
+    6. Duplicate Course and id in Course File

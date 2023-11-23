@@ -20,20 +20,20 @@ class OutputFileFormatter
         file = new PrintStream(checkFile);
     }
 
-    private String formatStudent(Student student)
+    private String[] formatStudent(Student student)
     {
-        Object[] courses = student.getCourses();
+        String[] courses = student.getCourses();
 
         String idString = Long.toString(student.getId()) + ", ";
 
         String studentName = student.getName() + ", ";
 
-        String outputString = "";
+        String[] results = new String[courses.length];
 
-        for (Object c : courses)
+        int i = 0;
+        for (String course : courses)
         {
-            String course = c.toString();
-
+            String outputString = "";
             float totalGrade = 0;
             try
             {
@@ -48,15 +48,22 @@ class OutputFileFormatter
             outputString += studentName;
             outputString += course + ", ";
             outputString += String.format("%.1f\n", totalGrade);
+            results[i++] = outputString;
+
+            System.out.print(outputString);
         }
         
-        return outputString;
+        return results;
     }
 
     public void printOutputFile() 
     {
         App.students.forEach((Long id, Student student) -> {
-            file.format(formatStudent(student));
+            String[] results = formatStudent(student);
+            for (String result : results)
+            {
+                file.format(result);
+            }
         });
     }
 }
